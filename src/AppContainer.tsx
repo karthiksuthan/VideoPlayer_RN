@@ -78,7 +78,7 @@ function App() {
      />
      {/* passing dummy subtitles as array , video link , moments as array
         any video url or file can be sent 
-        online subtitles can be handled by default by react native video , using dummy array here
+        online subtitles can be handled by default by react native video , using dummy subtitle array here
    */}
    </SafeAreaView>
  );
