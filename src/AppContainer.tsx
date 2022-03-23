@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Image,
   StatusBar,
@@ -88,6 +89,7 @@ function App() {
   const [listFlag, setListFlag] = useState<boolean>(false);
   const [selectedMoment, selectMoment] = useState<number|null>(null);
   const [momentTextVisible, setMomentTextVisible] = useState<boolean>(false);
+  const [videoLoading, setVideoLoading] = useState<boolean>(true);
 
   const onVideoPress = () => {
     clearTimeout(timer.current);
@@ -168,6 +170,13 @@ function App() {
         onPress={onVideoPress}
         activeOpacity={1}
         style={{alignItems: 'center', justifyContent: 'center'}}>
+        {videoLoading ? (
+          <View style={styles.videoLoader}>
+            <ActivityIndicator
+              size="large"
+              color={'violet'}></ActivityIndicator>
+          </View>
+        ) : null}
         {overlay ? (
           <TouchableOpacity style={styles.play} onPress={onPlayPause}>
             <Image
@@ -184,7 +193,10 @@ function App() {
                   <Text
                     key={index}
                     onPress={() => onSubSelect(index)}
-                    style={[styles.subtitleText,subSelected ==index && {fontWeight:'bold'}]}>
+                    style={[
+                      styles.subtitleText,
+                      subSelected == index && {fontWeight: 'bold'},
+                    ]}>
                     {item.language}
                   </Text>
                 ))}
@@ -208,9 +220,12 @@ function App() {
           resizeMode="contain"
           fullscreenAutorotate
           fullscreenOrientation="landscape"
+          onReadyForDisplay={()=>setVideoLoading(false)}
           onProgress={handleProgress}
           onLoad={handleLoad}
-          poster={"https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg"}
+          poster={
+            'https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg'
+          }
           posterResizeMode={'cover'}
         />
         {subSelected > 0 && ( // online subtitles can be added directly to video component , for demo purpose only
@@ -237,7 +252,7 @@ function App() {
                   style={[
                     styles.moment,
                     {left: `${(i.time / duration) * 100}%`},
-                    selectedMoment === index && {backgroundColor:'red'}
+                    selectedMoment === index && {backgroundColor: 'red'},
                   ]}
                   onPress={() => onMomentPress(index, i.time)}>
                   <View
@@ -388,5 +403,10 @@ const styles = StyleSheet.create({
     bottom: 30,
     fontSize: 12,
     color: 'white',
+  },
+  videoLoader: {
+    zIndex:10,
+    alignItems: 'center',
+    position: 'absolute',
   },
 });
